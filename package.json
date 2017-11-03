@@ -1,7 +1,7 @@
 {
   "name": "@cranespud/vue-typeahead",
   "description": "Vue Typeahead Component",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "author": "Cranespud <cranespud@gmail.com>",
   "main": "dist/vue-typeahead.js",
   "scripts": {
