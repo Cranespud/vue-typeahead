@@ -4,9 +4,6 @@
   "version": "1.0.3",
   "author": "Cranespud <cranespud@gmail.com>",
   "main": "dist/vue-typeahead.js",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "rimraf ./dist && cross-env NODE_ENV=production webpack --progress --hide-modules"
