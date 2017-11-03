@@ -1,12 +1,12 @@
 var path = require('path')
 var webpack = require('webpack')
+const merge = require('webpack-merge');
 
-module.exports = {
-  entry: './src/main.js',
+
+var commonConfig = {
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
-    filename: 'build.js'
   },
   module: {
     rules: [
@@ -52,7 +52,29 @@ module.exports = {
     hints: false
   },
   devtool: '#eval-source-map'
-}
+};
+
+module.exports = [
+    // browser
+    merge(commonConfig, {
+        entry: path.resolve(__dirname + '/src/plugin.js'),
+        output: {
+            filename: 'vue-typeahead.min.js',
+            libraryTarget: 'window',
+            library: 'VueTypeahead'
+        }        
+    }),
+            
+    merge(commonConfig, {
+        entry: path.resolve(__dirname + '/src/vue-typeahead.vue'),
+        output: {
+            filename: 'vue-typeahead.js',
+            libraryTarget: 'umd',
+            library: 'vue-typeahead',
+            umdNamedDefine: true
+        }        
+    })            
+];
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = '#source-map'
@@ -64,13 +86,13 @@ if (process.env.NODE_ENV === 'production') {
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    }),
+        sourceMap: true,
+        compress: {
+            warnings: false
+        }
+    }),    
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
-  ])
+  ]);
 }

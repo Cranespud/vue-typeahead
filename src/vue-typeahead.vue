@@ -1,4 +1,3 @@
-
 <template>
     <div class="typeahead-wrapper">
         <input :placeholder="placeholder" type='text' class='typeahead-input'
@@ -6,18 +5,20 @@
             @keyup.up="moveOption('up')"
             @keyup.down="moveOption('down')"
             @keyup.esc="hideOptions(true)"
+            @keyup.enter="selectOptionOnEnter(true)"
             @blur.capture="hideOptions"
             ref="input" @input="onValueEntered($event.target.value)"
             />
 
         <ul class="typeahead-matches-list" v-show="showMatches" ref="matchesList">
-            <li v-for="match in matches" 
+            <li v-for="(match, index) in matches" 
                 class="typeahead-match-list-item" 
+                :index="index" 
                 @click="onMatchSelected(match)"                 
                 @mouseover.self="onmouseover($event.target)"
                 @mouseleave.capture="onmouseout($event.target)">
                 <slot name="typeahead-match" :match="match">
-                    <div>{{match.name}}</div>
+                    <div>{{getMatchLabel(match)}}</div>
                 </slot>
             </li>
         </ul>
@@ -33,6 +34,7 @@ export default {
             required: true
         },
         'labelAttr': String,
+        'extractLabel': Function,
         'value': {
             type: null, // accept any type 
             required: true
@@ -46,46 +48,83 @@ export default {
       
     watch: {
         value(val) { 
-        // this occurs when the binded model changes without an input event
+        // this occurs when the bound model changes without an input event
         // for example when resetting the form        
         this.$refs.input.value = val ? this.getMatchLabel(val) : val;
         }
     },
     
     methods: {        
-        hideOptions(forceClose) {        
+        hideOptions(forceClose) {
+            // TODO find a better solution without setTimeout
             setTimeout(() => {
-                const preventBlur = !!this.$refs.matchesList.querySelector('li.hovered');
-                console.log("prevent blur", preventBlur);
-                
-                if(forceClose) {
-                    this.showMatches = false;
-                } else if(!preventBlur) {
-                    this.showMatches = false;
-                }                
+                this.showMatches = false;                                
+                this.makeInctive(this._getActiveOption());
             }, 200);
         },
         
+        makeActive(elem) {
+            if(elem) { elem.classList.add('active'); }
+        },
+        
+        makeInctive(elem) {
+            if(elem) { elem.classList.remove('active'); }
+        },
+        
+        _getActiveOption() {
+            return this.$refs.matchesList.querySelector('li.active');
+        },
+        
+        selectOptionOnEnter() {
+            const selected = this._getActiveOption();
+            
+            if(!selected) { return; }
+            
+            const index = parseInt(selected.getAttribute('index'));
+            this.onMatchSelected(this.matches[index]);
+            this.makeInctive(selected);
+        },
+        
         onmouseover(elem) {
-            elem.classList.add('hovered');
+            if(elem) { this.makeActive(elem); }
         },
     
         onmouseout(elem) {
-            elem.classList.remove('hovered');
-        },
+            if(elem) { this.makeInctive(elem); }
+        },       
         
-        moveOption(direction) {            
-            if(direction === 'down') {
+        moveOption(direction) {
+            let 
+            newActiveOption,
+            selected = this._getActiveOption();
+               
+            if(!selected) { 
                 this.showMatches = true;
-            }            
+                newActiveOption = direction === 'down' ? 
+                    this.$refs.matchesList.querySelector('li:first-child') : 
+                    this.$refs.matchesList.querySelector('li:last-child');
+                this.makeActive(newActiveOption);
+                return;
+            }
+            
+            newActiveOption = direction === 'down' ? selected.nextSibling : selected.previousSibling;
+            this.makeInctive(selected);
+            this.makeActive(newActiveOption);            
         },        
         
         getMatchLabel(match) {
+            if(typeof match !== 'object') {
+                return match;
+            }
+            
+            if(typeof this.extractLabel === 'function') {
+                return this.extractLabel(match);
+            }
+            
             return match[this.labelAttr || 'label'];
         },
 
         onMatchSelected(match) {
-            console.log(match);
             this.showMatches = false;
             this.$refs.input.value = this.getMatchLabel(match);
             this.$emit('input', match);
@@ -137,7 +176,7 @@ export default {
     margin: 0;
     text-align: left;
     
-    &:hover
+    &.active
         cursor: pointer;
         background: #337ab7;
         border: 1px solid #2e6da4;
