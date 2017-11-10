@@ -11,7 +11,7 @@ With npm
 
 ## Usage
 
-```
+```javascript
 import VueTypeahead from '@cranespud/vue-typeahead'
 
 // Then register it as a global component 
@@ -27,10 +27,11 @@ new Vue({
     typeahead: VueTypeahead
   }
 })
+```
 
+Then on the template
 
-// Then on the template
-
+```html
     <typeahead 
         v-model="selectedProduct"
         @change="getMatchingProducts"
@@ -60,7 +61,7 @@ A function that accepts as a parameter a "match" object, used to perform custom 
 ## Customizing the matches list
 You can customize the diplayed options by providing your own slot template, within the slot the current object is published as "match" property, for example
 
-```
+```html
     <typeahead v-model="..." @change="..." :matches="..">
         
         <div slot="typeahead-match" slot-scope="props">
@@ -73,7 +74,7 @@ You can customize the diplayed options by providing your own slot template, with
 ```
 
 You can easily override the default styles as well, here is the entire stylesheet
-```
+```css
 .typeahead-wrapper
     position: relative;
     padding: 1px;
