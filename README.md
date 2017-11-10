@@ -1,7 +1,5 @@
 # vue-typeahead
 
-> Vue Typeahead Component
-
 Typeahead component for Vue2 with customizable dropdown items through slots
 
 ## Installation
