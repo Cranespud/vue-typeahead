@@ -60,7 +60,7 @@ If your matches consists of an array of objects then this is the name of the pro
 A function that accepts as a parameter a "match" object, used to perform custom transformations before displaying the label.  This overrides labelAttr
 
 ## Customizing the matches list
-You can customize the diplayed options by providing your own slot template, within the slot the current object is published as "match" property, for example
+You can customize the displayed options by providing your own slot template; within the slot the current object is published as "match" property, for example
 
 ```html
     <typeahead v-model="..." @change="..." :matches="..">
