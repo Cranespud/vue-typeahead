@@ -2,7 +2,7 @@
 
 Typeahead component for Vue2 with customizable dropdown items through slots
 
-[Checkout the demo here](http://projects.cranespud.com/vue-typeahead)
+[Checkout the demo here](http://projects.abrahamwind.com/vue/vue-typeahead)
 
 ## Installation
 
