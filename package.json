@@ -4,6 +4,12 @@
   "version": "1.4.0",
   "author": "Cranespud <cranespud@gmail.com>",
   "main": "dist/vue-typeahead.js",
+  "keywords": [
+    "vue",
+    "vue2",
+    "typeahead",
+    "autocomplete"
+  ],
   "files": [
     "dist"
   ],
